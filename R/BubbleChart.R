@@ -7,7 +7,7 @@
 #' @param dat_list a named list like the one returned by \code{\link{FormatTiters}}. Values are assumed to be log2-transformed.
 #' @param fit what type of fit to add. Current options are "lm" for linear model, "exp" for exponential, or \code{NULL} for no smoothing.
 #' @param yMinZero a logical specifying whether fitted y values below 0 should be set to 0.
-#' @param eqSize Text size of the equation. Only relevant if \code{fit} is not \code{NULL}
+#' @param eqSize Text size of the equation. Only relevant if \code{fit} is not \code{NULL} and \code{label_eqn} is not \code{FALSE}
 #' @param subjectCol the name of the column specifying a subject ID. Default is "SubjectID". 
 #' @param colorBy a character string specifying an endpoint to colorBy or \code{NULL} (default) for no coloring.
 #' @param xlimits the x-axis limits (passed to \code{scale_x_continuous})
@@ -16,6 +16,7 @@
 #' @param ybreaks the y-axis breaks (passed to \code{scale_y_continuous})
 #' @param plot logical indicating whether to plot or not. Default is TRUE
 #' @param cols numeric specifying how many columns to layout plot
+#' @param label_eqn logical specifying whether or not to display an equation on the graph. Default is "FALSE" with no equation shown (equation plotting with super-/sub-scripts can upset knitr/pdf/svg).
 #' @param ... other arguments besides \code{method} and \code{subjectCol} passed to \code{\link{Calculate_maxRBA}}.
 #' @return (invisibly) a list of ggplot2 objects.
 #' 
@@ -50,7 +51,7 @@ BubbleChart <- function(dat_list, subjectCol = "SubjectID",
                         colorBy = NULL,
                         xlimits = c(1.5, 10.5), xbreaks = 2:10,
                         ylimits = c(-0.5, 10), ybreaks = seq(0, 10, 2),
-                        plot = TRUE, cols = 2, ...) {
+                        plot = TRUE, cols = 2, label_eqn == FALSE, ...) {
   if (sum(subjectCol == unlist(lapply(dat_list, colnames))) != length(dat_list)) {
     stop("Must specify a valid subject column name using the `subjecCol` argument")
   }
@@ -107,10 +108,12 @@ BubbleChart <- function(dat_list, subjectCol = "SubjectID",
             stop("fit must be 'exp' or 'lm'")
           }
       ## Add text to plot with formula
+      if (label_eqn == TRUE) {
       gg <- gg + geom_text(aes(x = quantile(xlimits[1]:xlimits[2], 0.50),
                                y = quantile(ylimits[1]:ylimits[2], 0.90)),
                            label = GetEqn(mod),
                            parse = TRUE, size = eqSize, color = "black")
+        }
       if (!is.null(colorBy)) { 
         if (colorBy %in% names(endpoints)) {
           plotDat[[colorBy]] <- endpoints[[colorBy]][as.character(plotDat[[subjectCol]])]
