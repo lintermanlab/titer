@@ -49,7 +49,8 @@ BubbleChart <- function(dat_list, subjectCol = "SubjectID",
                         fit = NULL, yMinZero = FALSE,
                         eqSize = 6 / log2(length(dat_list)+1),
                         colorBy = NULL,
-                        xlimits = c(1.5, 10.5), xbreaks = 2:10,
+                        xlimits = c(1.5, 10.5), ## xbreaks = 2:10,
+                        xbreaks = seq(2, 10, 2),
                         ylimits = c(-0.5, 10), ybreaks = seq(0, 10, 2),
                         plot = TRUE, cols = 2, label_eqn = FALSE, ...) {
   if (sum(subjectCol == unlist(lapply(dat_list, colnames))) != length(dat_list)) {
