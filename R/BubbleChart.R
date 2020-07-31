@@ -17,6 +17,8 @@
 #' @param plot logical indicating whether to plot or not. Default is TRUE
 #' @param cols numeric specifying how many columns to layout plot
 #' @param label_eqn logical specifying whether or not to display an equation on the graph. Default is "FALSE" with no equation shown (equation plotting with super-/sub-scripts can upset knitr/pdf/svg).
+#' @param smallBubbleSize the size of the smallest bubble, as numeric. Default is 2.
+#' @param largeBubbleSize the size of the largest bubble, as numeric. Default is 7.
 #' @param ... other arguments besides \code{method} and \code{subjectCol} passed to \code{\link{Calculate_maxRBA}}.
 #' @return (invisibly) a list of ggplot2 objects.
 #' 
@@ -52,6 +54,7 @@ BubbleChart <- function(dat_list, subjectCol = "SubjectID",
                         xlimits = c(1.5, 10.5), ## xbreaks = 2:10,
                         xbreaks = seq(2, 10, 2),
                         ylimits = c(-0.5, 10), ybreaks = seq(0, 10, 2),
+                        smallBubbleSize = 2, largeBubbleSize = 7,
                         plot = TRUE, cols = 2, label_eqn = FALSE, ...) {
   if (sum(subjectCol == unlist(lapply(dat_list, colnames))) != length(dat_list)) {
     stop("Must specify a valid subject column name using the `subjecCol` argument")
@@ -70,7 +73,7 @@ BubbleChart <- function(dat_list, subjectCol = "SubjectID",
       geom_hline(aes(yintercept = log2(1)), color = "black") + 
       geom_hline(aes(yintercept = log2(4)), color = "grey20", alpha = 0.5) +
       geom_vline(aes(xintercept = log2(40)), color = "grey20", alpha = 0.5) +
-      scale_size(range = c(2,7), limits = c(1, upLim)) +
+      scale_size(range = c(smallBubbleSize,largeBubbleSize), limits = c(1, upLim)) +
       scale_y_continuous(limits = ylimits, labels = 2^ybreaks,
                          breaks = ybreaks) +      
       scale_x_continuous(limits = xlimits, labels = 2^xbreaks,
